@@ -62,6 +62,8 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.json({
     message: err.message,
+    reason: err.reason,
+    location: err.location,
     error: app.get('env') === 'development' ? err : {}
   });
 });

@@ -30,6 +30,7 @@ router.post('/users', (req, res, next) => {
   if (nonStringField) {
     const err = new Error(`Field: '${nonStringField}' must be type String`);
     err.status = 422;
+    err.location = 'username';
     return next(err);
   }
   
@@ -76,7 +77,7 @@ router.post('/users', (req, res, next) => {
   
   if (tooLargeField) {
     const max = sizedFields[tooLargeField].max;
-    const err = new Error(`Field: '${tooSmallField}' must be at most ${max} characters long`);
+    const err = new Error(`Field: '${tooLargeField}' must be at most ${max} characters long`);
     err.status = 422;
     return next(err);
   }
