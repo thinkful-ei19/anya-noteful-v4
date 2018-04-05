@@ -11,11 +11,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true}
 });
 
-userSchema.set('toOject', {
+userSchema.set('toObject', {
   transform: function(doc, ret) {
     ret.id = ret._id;
     delete ret._id;
-    delete ret._v;
+    delete ret.__v;
     delete ret.password;
   }
 });
@@ -27,7 +27,8 @@ userSchema.methods.validatePassword = function (password) {
 userSchema.statics.hashPassword = function (password) {
   return bcrypt.hash(password, 10);
 };
-// userSchema.methods.apiRepr = function () {
+
+// userSchema.methods.serialize = function () {
 //   return {
 //     id: this._id,
 //     fullname: this.fullname,
@@ -35,5 +36,5 @@ userSchema.statics.hashPassword = function (password) {
 //   };
 // };
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+
+module.exports = mongoose.model('User', userSchema);

@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { User } = require('../models/user');
+const User = require('../models/user');
 
 const router = express.Router();
 
@@ -10,6 +10,8 @@ router.use(bodyParser.json());
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/users', (req, res, next) => {
+  console.log('worked');
+  console.log(req.body);
 
   const requiredFields = ['username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
@@ -82,9 +84,10 @@ router.post('/users', (req, res, next) => {
   // Username and password were validated as pre-trimmed
   let { username, password, fullname = '' } = req.body;
   fullname = fullname.trim();
-  
+  console.log(password);
   // Remove explicit hashPassword if using pre-save middleware
   return User.hashPassword(password)
+    //.then(console.log(password))
     .then(digest => {
       const newUser = {
         username,

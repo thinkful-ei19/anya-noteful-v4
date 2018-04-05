@@ -3,8 +3,11 @@
 const mongoose = require('mongoose');
 
 const folderSchema = new mongoose.Schema({
-  name: { type: String, unique: true}
+  name: { type: String},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
+// compound index
+folderSchema.index({ name: 1, userId: 1}, { unique: true });
 
 folderSchema.set('toObject', {
   transform: function (doc, ret) {
@@ -14,15 +17,27 @@ folderSchema.set('toObject', {
   }
 });
 
-/** BONUS CHALLENGE
- * Move the cascading delete or cascade set null into the schema
+
+//cascade null
 folderSchema.pre('remove', function(next) {
-  mongoose.models.Note.remove({folderId: this._id})
+  mongoose.models.Note.updateMany(
+    { folderId: this._id, userId: this.userId },
+    { '$unset': { 'folderId': '' } }
+  )
     .then(() => next())
     .catch(err => {
       next(err);
     });
 });
-*/
+
+//cascade delete
+// folderSchema.pre('remove', function(next) {
+//   mongoose.models.Note.remove({folderId: this._id})
+//     .then(() => next())
+//     .catch(err => {
+//       next(err);
+//     });
+// });
+
 
 module.exports = mongoose.model('Folder', folderSchema);
