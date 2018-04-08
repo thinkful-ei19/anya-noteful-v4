@@ -15,7 +15,7 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe.only('Noteful API - Login', function () {
+describe('Noteful API - Login', function () {
   let token;
   const fullname = 'Example User';
   const username = 'exampleUser';

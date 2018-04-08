@@ -279,15 +279,17 @@ describe('Noteful API - Notes', function () {
       return Note.findOne()
         .then(_data => {
           data = _data;
-          return chai.request(app)
+          return chai
+            .request(app)
             .put(`/api/notes/${data.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send(updateItem);
         })
         .then(function (res) {
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body).to.have.keys('id', 'title', 'content', 'created', 'folderId', 'tags');
+          expect(res.body).to.have.keys('id', 'title', 'content', 'created', 'folderId', 'tags', 'userId');
 
           expect(res.body.id).to.equal(data.id);
           expect(res.body.title).to.equal(updateItem.title);
@@ -303,8 +305,10 @@ describe('Noteful API - Notes', function () {
       };
       const badId = '99-99-99';
 
-      return chai.request(app)
+      return chai
+        .request(app)
         .put(`/api/notes/${badId}`)
+        .set('Authorization', `Bearer ${token}`)
         .send(updateItem)
         .catch(err => err.response)
         .then(res => {
@@ -322,6 +326,7 @@ describe('Noteful API - Notes', function () {
       return chai.request(app)
         .put('/api/notes/AAAAAAAAAAAAAAAAAAAAAAAA')
         .send(updateItem)
+        .set('Authorization', `Bearer ${token}`)
         .catch(err => err.response)
         .then(res => {
           expect(res).to.have.status(404);
@@ -336,6 +341,7 @@ describe('Noteful API - Notes', function () {
       return chai.request(app)
         .put('/api/notes/9999')
         .send(updateItem)
+        .set('Authorization', `Bearer ${token}`)
         .catch(err => err.response)
         .then(res => {
           expect(res).to.have.status(400);
@@ -354,7 +360,10 @@ describe('Noteful API - Notes', function () {
       return Note.findOne()
         .then(_data => {
           data = _data;
-          return chai.request(app).delete(`/api/notes/${data.id}`);
+          return chai
+            .request(app)
+            .delete(`/api/notes/${data.id}`)
+            .set('Authorization', `Bearer ${token}`);
         })
         .then(function (res) {
           expect(res).to.have.status(204);
